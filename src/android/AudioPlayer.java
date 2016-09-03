@@ -343,7 +343,10 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
     public void stopPlaying() {
         if ((this.state == STATE.MEDIA_RUNNING) || (this.state == STATE.MEDIA_PAUSED)) {
             this.player.pause();
-            this.player.seekTo(0);
+            //https://github.com/apache/cordova-plugin-media/pull/97/files //GM
+            if (this.player.getDuration() > 0) {
+                this.player.seekTo(0);
+            }
             LOG.d(LOG_TAG, "stopPlaying is calling stopped");
             this.setState(STATE.MEDIA_STOPPED);
         }
@@ -435,7 +438,7 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
         // Listen for playback completion
         this.player.setOnCompletionListener(this);
         // seek to any location received while not prepared
-        this.seekToPlaying(this.seekOnPrepared);
+        //this.seekToPlaying(this.seekOnPrepared); //Fix Android 6
         // If start playing after prepared
         if (!this.prepareOnly) {
             this.player.start();
